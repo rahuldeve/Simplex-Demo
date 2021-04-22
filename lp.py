@@ -6,27 +6,36 @@ def is_ineq_nonnegative(var_range):
 
 
 def fix_non_negative_variable_constraints(program):
-    to_fix = set([
+    to_replace = set([
         v.name for v in program.variables.values()
         if is_ineq_nonnegative(v.range)
     ])
+
+    new_name_mapping = { old_name : old_name + '\'' for old_name in to_replace}
+
+    # replace x with x'; set the appropriate variable range
+    for v_name in to_replace:
+        variable = program.variables[v_name]
+        variable.name = new_name_mapping[v_name]
+        variable.range = (0, math.inf)
+
+        program.variables.pop(v_name, None)
+        program.variables[new_name_mapping[v_name]] = variable
 
     # flip signs and inequality in constraints    
     for c in program.constraints:
         for idx in range(len(c.variable_names)):
             vi = c.variable_names[idx]
-            if vi in to_fix :
+            if vi in to_replace :
+                c.variable_names[idx] = new_name_mapping[vi]
                 c.constants[idx] *= -1
 
     # flip signs in objective function
     for idx in range(len(program.objective_function.variable_names)):
         vi = program.objective_function.variable_names[idx]
-        if vi in to_fix:
+        if vi in to_replace:
+            program.objective_function.variable_names[idx] = new_name_mapping[vi]
             program.objective_function.constants[idx] *= -1
-
-    for v_name in to_fix:
-        variable = program.variables[v_name]
-        variable.range = (0, math.inf)
 
     return program
 
