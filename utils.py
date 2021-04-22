@@ -30,14 +30,13 @@ class Operation(Enum):
 @dataclass
 class Variable():
     name: str
-    ineq: Inequality
-    value: float
+    range: (float, float)
 
     def __hash__(self):
         return self.name.__hash__()
 
     def __repr__(self):
-        return (self.name, self.ineq.value, self.value).__repr__()
+        return f'{self.name} in [{self.range[0]} ... {self.range[1]}]'
 
 
 

@@ -1,5 +1,6 @@
 from utils import *
 from pyparsing import *
+import math
 
 def handle_inequality(tokens):
     mapping = {
@@ -67,7 +68,19 @@ def construct_variable(parsed):
     constant, var_name = parsed[0]
     ineq = parsed[1]
     value = parsed[2]
-    return Variable(var_name, ineq, value)
+
+    # Assume variable declaration can only have 0 in RHS
+    assert value == 0
+    # Equality constraint not supported in variable declaration
+    assert ineq == Inequality.leq or ineq == Inequality.geq
+
+    var_range = (-math.inf, math.inf)
+    if ineq == Inequality.leq:
+        var_range = (-math.inf, value)
+    elif ineq == Inequality.geq:
+        var_range = (value, math.inf)
+
+    return Variable(var_name, var_range)
 
 var_decl = Literal('var ').suppress() + var_with_constant + ineq + number + end_of_line
 var_decl.setParseAction(construct_variable)

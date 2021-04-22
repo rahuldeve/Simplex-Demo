@@ -1,13 +1,12 @@
 from utils import *
+import math
 
-def is_ineq_nonnegative(ineq, value):
-    # checking only for the following case below
-    # check x < 0 or x <= 0
-    return ineq == Inequality.leq and value <= 0
+def is_ineq_nonnegative(var_range):
+    return var_range[0] < 0 and var_range[1] <= 0
 
 
 def fix_non_negative_variable_constraints(program):
-    to_fix = set([v for v in program.variables if is_ineq_nonnegative(v.ineq, v.value)])
+    to_fix = set([v for v in program.variables if is_ineq_nonnegative(v.range)])
 
     # flip signs and inequality in constraints    
     for c in program.constraints:
@@ -21,6 +20,9 @@ def fix_non_negative_variable_constraints(program):
         vi = program.objective_function.variables[idx]
         if vi in to_fix:
             program.objective_function.constants[idx] *= -1
+
+    for v in to_fix:
+        v.range = (0, math.inf)
 
     return program
 
