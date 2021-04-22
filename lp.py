@@ -1,5 +1,6 @@
 from utils import *
 import math
+from copy import deepcopy
 
 def is_ineq_nonnegative(var_range):
     return var_range[0] < 0 and var_range[1] <= 0
@@ -50,6 +51,34 @@ def fix_constraints_rhs_negative(program):
     return program
 
 
+def fix_equality_in_constraint(program):
+
+    has_equality = [
+        i for i,c in enumerate(program.constraints)
+        if c.ineq == Inequality.eq
+    ]
+
+    converted = []
+    # convert x + y = 1 to x + y <= 1 and x + y >= 1
+    for idx, c in enumerate(program.constraints):
+        if c.ineq == Inequality.eq:
+            # convert to <=
+            c.ineq = Inequality.leq
+            # convert to >=
+            cn = deepcopy(c)
+            cn.ineq = Inequality.geq
+
+            converted.append(c)
+            converted.append(cn)
+
+        else:
+            converted.append(c)
+
+    
+    program.constraints = converted
+    return program
+
+    
 def standardize(program):
     program = fix_non_negative_variable_constraints(program)
     program = fix_constraints_rhs_negative(program)
