@@ -1,6 +1,6 @@
 from enum import Enum
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, Mapping
 
 class Inequality(Enum):
     # l = '<'
@@ -42,8 +42,8 @@ class Variable():
 
 @dataclass
 class Constraint():
-    variables: List
-    constants: List
+    variable_names: List[str]
+    constants: List[float]
     ineq: Inequality
     value: float
 
@@ -56,27 +56,12 @@ class ObjectiveTypes(Enum):
 @dataclass
 class Objective():
     obj_type: ObjectiveTypes
-    variables: List
-    constants: List
+    variable_names: List[str]
+    constants: List[float]
 
 
 class Program():
-    variables: List[Variable]
-    constraints: List[Constraint]
-    objective_function: Objective
-
     def __init__(self, variables, constraints, objective_function):
-        self.variables = variables
+        self.variables = {v.name : v for v in variables}
         self.constraints = constraints
         self.objective_function = objective_function
-
-        # Map variable_names to variables in constraints and objective_function
-        # Handle case for unbound variables. They might not have been declared
-        
-        mapping = {v.name : v for v in variables}
-        for c in self.constraints:
-            c.variables = [mapping[v_name] for v_name in c.variables]
-
-        self.objective_function.variables = [
-            mapping[v_name] for v_name in self.objective_function.variables
-        ]

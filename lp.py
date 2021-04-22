@@ -6,23 +6,27 @@ def is_ineq_nonnegative(var_range):
 
 
 def fix_non_negative_variable_constraints(program):
-    to_fix = set([v for v in program.variables if is_ineq_nonnegative(v.range)])
+    to_fix = set([
+        v.name for v in program.variables.values()
+        if is_ineq_nonnegative(v.range)
+    ])
 
     # flip signs and inequality in constraints    
     for c in program.constraints:
-        for idx in range(len(c.variables)):
-            vi = c.variables[idx]
+        for idx in range(len(c.variable_names)):
+            vi = c.variable_names[idx]
             if vi in to_fix :
                 c.constants[idx] *= -1
 
     # flip signs in objective function
-    for idx in range(len(program.objective_function.variables)):
-        vi = program.objective_function.variables[idx]
+    for idx in range(len(program.objective_function.variable_names)):
+        vi = program.objective_function.variable_names[idx]
         if vi in to_fix:
             program.objective_function.constants[idx] *= -1
 
-    for v in to_fix:
-        v.range = (0, math.inf)
+    for v_name in to_fix:
+        variable = program.variables[v_name]
+        variable.range = (0, math.inf)
 
     return program
 
