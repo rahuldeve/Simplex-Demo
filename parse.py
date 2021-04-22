@@ -29,7 +29,7 @@ def handle_operation(tokens):
 def handle_variable_with_constant(tokens):
     if len(tokens) == 1:
         # The tokens[0] object will be of type Variable since it was already parsed before
-        return (1, tokens[0])
+        return (1.0, tokens[0])
     else:
         # The tokens[1] object will be of type Variable since it was already parsed before
         return (tokens[0], tokens[1])

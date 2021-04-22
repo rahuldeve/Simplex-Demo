@@ -47,6 +47,13 @@ class Constraint():
     ineq: Inequality
     value: float
 
+    def __repr__(self):
+        zipped = zip(self.constants, self.variable_names)
+        var_with_constants = [str(c)+v for c,v in zipped]
+        lhs = ' + '.join(var_with_constants)
+        return f'{lhs} {self.ineq.value} {self.value}'
+
+
 
 class ObjectiveTypes(Enum):
     maximize = 1
