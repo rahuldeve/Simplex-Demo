@@ -36,7 +36,7 @@ def fix_constraints_rhs_negative(program):
 
 
 def standardize(program):
-    program = fix_constraints_rhs_negative(program)
+    program = fix_non_negative_variable_constraints(program)
     program = fix_constraints_rhs_negative(program)
     # Handle unbound variables
     # Handle equality signs
