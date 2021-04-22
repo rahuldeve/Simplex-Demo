@@ -78,6 +78,13 @@ def fix_equality_in_constraint(program):
     program.constraints = converted
     return program
 
+def convert_to_maximization(program):
+    if program.objective_function.obj_type = ObjectiveTypes.minimize:
+        # flip the signs for all constants in the objective function
+        for idx in range(len(program.objective_function.constants)):
+            program.objective_function.constants[idx] *= -1
+
+
     
 def standardize(program):
     program = fix_non_negative_variable_constraints(program)
