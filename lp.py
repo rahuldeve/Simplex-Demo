@@ -41,9 +41,10 @@ def fix_non_negative_variable_constraints(program):
     return program
 
 
-def fix_constraints_rhs_negative(program):
+# Convert x + y >= 3 to -x + -y <= -3 
+def fix_constraints_inequality_geq(program):
     for c in program.constraints:
-        if c.value < 0:
+        if c.ineq == Inequality.geq:
             c.constants = [-1*const for const in c.constants]
             c.ineq = c.ineq.flip()
             c.value *= -1
@@ -73,7 +74,6 @@ def fix_equality_in_constraint(program):
 
         else:
             converted.append(c)
-
     
     program.constraints = converted
     return program
