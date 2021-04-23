@@ -6,7 +6,7 @@ def is_ineq_nonnegative(var_range):
     return var_range[0] < 0 and var_range[1] <= 0
 
 
-def fix_non_negative_variable_constraints(program):
+def fix_non_negative_variable_declarations(program):
     to_replace = set([
         v.name for v in program.variables.values()
         if is_ineq_nonnegative(v.range)
@@ -52,7 +52,8 @@ def fix_constraints_inequality_geq(program):
     return program
 
 
-def fix_equality_in_constraint(program):
+
+def fix_equality_in_constraints(program):
 
     has_equality = [
         i for i,c in enumerate(program.constraints)
@@ -78,8 +79,10 @@ def fix_equality_in_constraint(program):
     program.constraints = converted
     return program
 
+
+
 def convert_to_maximization(program):
-    if program.objective_function.obj_type = ObjectiveTypes.minimize:
+    if program.objective_function.obj_type == ObjectiveTypes.minimize:
         # flip the signs for all constants in the objective function
         for idx in range(len(program.objective_function.constants)):
             program.objective_function.constants[idx] *= -1
@@ -87,8 +90,24 @@ def convert_to_maximization(program):
 
     
 def standardize(program):
-    program = fix_non_negative_variable_constraints(program)
-    program = fix_constraints_rhs_negative(program)
     # Handle unbound variables
-    # Handle equality signs
+    program = fix_non_negative_variable_declarations(program)
+    program = fix_equality_in_constraints(program)
+    program = fix_constraints_inequality_geq(program)
+    return program
+
+
+
+def slackify(program):
+    for idx, c in enumerate(program.constraints):
+        assert c.ineq == Inequality.leq
+        slack_var_name = f's{idx + 1}'
+
+        slack_var = Variable(slack_var_name, (0, math.inf))
+        program.variables[slack_var_name] = slack_var
+
+        c.variable_names.append(slack_var_name)
+        c.constants.append(1.0)
+        c.ineq = Inequality.eq
+
     return program
