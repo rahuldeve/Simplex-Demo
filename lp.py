@@ -94,6 +94,7 @@ def standardize(program):
     program = fix_non_negative_variable_declarations(program)
     program = fix_equality_in_constraints(program)
     program = fix_constraints_inequality_geq(program)
+    program = convert_to_maximization(program)
     return program
 
 
