@@ -67,6 +67,7 @@ class Objective():
     constants: List[float]
 
 
+@dataclass
 class Program():
     def __init__(self, variables, constraints, objective_function):
         self.variables = {v.name : v for v in variables}
