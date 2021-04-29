@@ -93,7 +93,7 @@ def convert_to_maximization(program):
 
 
     
-def standardize(program):
+def to_standardard_form(program):
     # Handle unbound variables
     program = fix_non_negative_variable_declarations(program)
     program = fix_equality_in_constraints(program)
@@ -103,7 +103,7 @@ def standardize(program):
 
 
 
-def slackify(program):
+def to_slack_form(program):
     for idx, c in enumerate(program.constraints):
         assert c.ineq == Inequality.leq
         slack_var_name = f's{idx + 1}'
