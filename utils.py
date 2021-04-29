@@ -31,12 +31,13 @@ class Operation(Enum):
 class Variable():
     name: str
     range: (float, float)
+    is_slack: bool = False
 
     def __hash__(self):
         return self.name.__hash__()
 
     def __repr__(self):
-        return f'{self.name} in [{self.range[0]} ... {self.range[1]}]'
+        return f'{self.name} in [{self.range[0]} ... {self.range[1]}] ; is_slack = {self.is_slack}'
 
 
 

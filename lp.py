@@ -2,6 +2,8 @@ from utils import *
 import math
 from copy import deepcopy
 
+## https://sites.math.washington.edu/~burke/crs/407/lectures/L4-lp_standard_form.pdf
+
 def is_ineq_nonnegative(var_range):
     return var_range[0] < 0 and var_range[1] <= 0
 
@@ -87,6 +89,8 @@ def convert_to_maximization(program):
         for idx in range(len(program.objective_function.constants)):
             program.objective_function.constants[idx] *= -1
 
+    return program
+
 
     
 def standardize(program):
@@ -104,11 +108,18 @@ def slackify(program):
         assert c.ineq == Inequality.leq
         slack_var_name = f's{idx + 1}'
 
-        slack_var = Variable(slack_var_name, (0, math.inf))
+        slack_var = Variable(slack_var_name, (0, math.inf), is_slack=True)
         program.variables[slack_var_name] = slack_var
 
         c.variable_names.append(slack_var_name)
         c.constants.append(1.0)
         c.ineq = Inequality.eq
+
+    # fix rhs having negative constants
+    for c in program.constraints:
+        if c.value < 0:
+            # flip signs of all constants and value
+            c.constants = [-1*k for k in c.constants]
+            c.value *= -1
 
     return program
