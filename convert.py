@@ -108,7 +108,7 @@ def to_slack_form(program):
         assert c.ineq == Inequality.leq
         slack_var_name = f's{idx + 1}'
 
-        slack_var = Variable(slack_var_name, (0, math.inf), is_slack=True)
+        slack_var = Variable(slack_var_name, (0.0, math.inf), is_slack=True)
         program.variables[slack_var_name] = slack_var
 
         c.variable_names.append(slack_var_name)
