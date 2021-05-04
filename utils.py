@@ -37,7 +37,10 @@ class Variable():
         return self.name.__hash__()
 
     def __repr__(self):
-        return f'{self.name} in [{self.range[0]} ... {self.range[1]}] ; is_slack = {self.is_slack}'
+        ret = f'{self.name} in {self.range}'
+        if self.is_slack:
+            ret = ret + f'\t\t[[slack]]'
+        return ret
 
 
 
@@ -52,7 +55,7 @@ class Constraint():
         zipped = zip(self.constants, self.variable_names)
         var_with_constants = [str(c)+v for c,v in zipped]
         lhs = ' + '.join(var_with_constants)
-        return f'{lhs} {self.ineq.value} {self.value}'
+        return f'{lhs} \t {self.ineq.value} \t {self.value}'
 
 
 
@@ -74,3 +77,21 @@ class Program():
         self.variables = {v.name : v for v in variables}
         self.constraints = constraints
         self.objective_function = objective_function
+        
+    def __repr__(self):
+
+        # print variables:
+        variables = []
+        for v in self.variables.values():
+            variables.append(f'var {v.name} in {v.range}')
+
+        variables = '\n'.join(variables)
+
+        # print constraints
+        constraints = []
+        for c in self.constraints:
+            constraints.append(c.__repr__())
+
+        constraints = '\n'.join(constraints)
+
+        return variables + '\n\n' + constraints
