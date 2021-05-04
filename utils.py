@@ -79,6 +79,7 @@ class Program():
         self.objective_function = objective_function
 
         self.explanations = []
+        self.intersection_points = []
 
 
     def __repr__(self):

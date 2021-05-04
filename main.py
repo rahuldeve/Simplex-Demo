@@ -2,6 +2,7 @@ from parse import *
 from utils import *
 from convert import *
 from solve import *
+from explore import *
 
 text = '''
 var x1 >= 0;
@@ -17,6 +18,7 @@ maximize:     3x1 + 2x2;
 
 p = parse_linear_program(text)
 q = to_standardard_form(p)
+q.intersection_points = get_all_intersection_points(q)
 q = to_slack_form(q)
-print(q.variables.keys())
+print(q.intersection_points)
 print(simplex(q))
