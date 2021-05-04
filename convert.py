@@ -14,6 +14,9 @@ def fix_non_negative_variable_declarations(program):
         if is_ineq_nonnegative(v.range)
     ])
 
+    expl = f'''Non negative variable declarations: {to_replace}'''
+    program.explanations.append(expl)
+
     new_name_mapping = { old_name : old_name + '\'' for old_name in to_replace}
 
     # replace x with x'; set the appropriate variable range
@@ -61,6 +64,10 @@ def fix_equality_in_constraints(program):
         i for i,c in enumerate(program.constraints)
         if c.ineq == Inequality.eq
     ]
+
+    eql_constraints = [program.constraints[i] for i in has_equality]
+    expl = f'Detected equality in constraints: {eql_constraints}'
+    program.explanations.append(expl)
 
     converted = []
     # convert x + y = 1 to x + y <= 1 and x + y >= 1

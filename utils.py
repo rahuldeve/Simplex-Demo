@@ -55,7 +55,7 @@ class Constraint():
         zipped = zip(self.constants, self.variable_names)
         var_with_constants = [str(c)+v for c,v in zipped]
         lhs = ' + '.join(var_with_constants)
-        return f'{lhs} \t {self.ineq.value} \t {self.value}'
+        return f'{lhs} {self.ineq.value} {self.value}'
 
 
 
@@ -77,7 +77,10 @@ class Program():
         self.variables = {v.name : v for v in variables}
         self.constraints = constraints
         self.objective_function = objective_function
-        
+
+        self.explanations = []
+
+
     def __repr__(self):
 
         # print variables:
