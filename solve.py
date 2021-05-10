@@ -102,8 +102,12 @@ def get_solution(tableau):
 def simplex(program):
     tableau = to_tableau(program)
 
+    explored_points = []
     while can_be_improved(tableau):
         pivot_position = get_pivot_position(tableau)
         tableau = pivot_step(tableau, pivot_position)
+        sol = get_solution(tableau)
+        explored_points.append(sol)
 
-    return get_solution(tableau)
+    final_sol = explored_points[-1]
+    return (final_sol, explored_points)
