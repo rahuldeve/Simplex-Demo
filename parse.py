@@ -1,6 +1,7 @@
 from utils import *
 from pyparsing import *
 import math
+import copy
 
 def handle_inequality(tokens):
     mapping = {
@@ -190,4 +191,5 @@ def parse_linear_program(text):
     objective_func = res[2]
 
     program = Program(variables, constraints, objective_func)
+    program.steps['initial_parse'] = copy.deepcopy(program)
     return program

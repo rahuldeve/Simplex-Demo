@@ -1,6 +1,6 @@
 from utils import *
 import math
-from copy import deepcopy
+import copy
 
 ## https://sites.math.washington.edu/~burke/crs/407/lectures/L4-lp_standard_form.pdf
 
@@ -13,9 +13,6 @@ def fix_non_negative_variable_declarations(program):
         v.name for v in program.variables.values()
         if is_ineq_nonnegative(v.range)
     ])
-
-    expl = f'''Non negative variable declarations: {to_replace}'''
-    program.explanations.append(expl)
 
     new_name_mapping = { old_name : old_name + '\'' for old_name in to_replace}
 
@@ -66,8 +63,6 @@ def fix_equality_in_constraints(program):
     ]
 
     eql_constraints = [program.constraints[i] for i in has_equality]
-    expl = f'Detected equality in constraints: {eql_constraints}'
-    program.explanations.append(expl)
 
     converted = []
     # convert x + y = 1 to x + y <= 1 and x + y >= 1
@@ -106,6 +101,7 @@ def to_standardard_form(program):
     program = fix_equality_in_constraints(program)
     program = fix_constraints_inequality_geq(program)
     program = convert_to_maximization(program)
+    program.steps['stardard_form_conversion'] = copy.deepcopy(program)
     return program
 
 
@@ -129,4 +125,5 @@ def to_slack_form(program):
             c.constants = [-1*k for k in c.constants]
             c.value *= -1
 
+    program.steps['slack_form_conversion'] = copy.deepcopy(program)
     return program

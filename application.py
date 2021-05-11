@@ -19,20 +19,14 @@ def results():
     inp = request.form['input']
 
     p = parse_linear_program(inp)
-    q = to_standardard_form(p)
-    q.intersection_points = get_all_intersection_points(q)
-    q = to_slack_form(q)
+    p = to_standardard_form(p)
+    p.intersection_points = get_all_intersection_points(p)
+    p = to_slack_form(p)
 
-    intersection_points = q.intersection_points
-    final, steps = simplex(q)
+    intersection_points = p.intersection_points
+    final, steps = simplex(p)
 
-    ret = {
-        'intersection_points' : intersection_points,
-        'simplex_iteration_steps': steps,
-        'optimal_point': final
-    }
-
-    return jsonify(ret)
+    return render_template('results.html', program=p)
 
 if __name__ == '__main__':
     app.run(debug=True)

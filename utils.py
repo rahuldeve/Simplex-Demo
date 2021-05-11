@@ -70,6 +70,13 @@ class Objective():
     variable_names: List[str]
     constants: List[float]
 
+    def __repr__(self):
+        zipped = zip(self.constants, self.variable_names)
+        var_with_constants = [str(c)+v for c,v in zipped]
+        function = ' + '.join(var_with_constants)
+        function_type = self.obj_type.name
+        return f'{function_type}: {function}'
+
 
 @dataclass
 class Program():
@@ -78,7 +85,7 @@ class Program():
         self.constraints = constraints
         self.objective_function = objective_function
 
-        self.explanations = []
+        self.steps = {}
         self.intersection_points = []
 
 

@@ -4,20 +4,17 @@
     </head>
     <body>
         <h3>Sample linear program</h3>
-        <span>
-            var x1 >= 0; <br>
-            var x2 >= 0; <br>
-            <br>
-            st:   x1 +   x2 <=  9;<br>
-            st: 3x1 +   x2 <= 18;<br>
-            st:   x1        <=  7;<br>
-            st:          x2 <=  6;<br>
-            <br>
-            maximize:     3x1 + 2x2;<br>
-            <br>
-            <br>
-
-        </span>
+        <pre>
+        var x1 >= 0;
+        var x2 >= 0;
+            
+        st:   x1 +   x2 <=  9;
+        st: 3x1 +   x2 <= 18;
+        st:   x1        <=  7;
+        st:          x2 <=  6;
+            
+        maximize:     3x1 + 2x2;
+        </pre>
         <form action="{{ url_for('results') }}", method="POST">
             <textarea name="input">
 

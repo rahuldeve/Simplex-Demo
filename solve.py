@@ -1,5 +1,6 @@
 import math
 import numpy as np
+import copy
 
 # reference: https://geekrodion.com/blog/operations/simplex
 # https://github.com/RodionChachura/optimization/blob/master/linear_programming.ipynb
@@ -18,11 +19,13 @@ def generate_A(program, variable_names_to_idx):
 
         A.append(row)
 
+    program.steps['mat_A'] = np.array(A)
     return A
     
     
 def generate_b(program):
     b = [c.value for c in program.constraints]
+    program.steps['mat_b'] = np.array(b)
     return b
 
 
@@ -34,6 +37,7 @@ def generate_c(program, variable_names_to_idx):
         idx = variable_names_to_idx[name]
         c[idx] = constant
 
+    program.steps['mat_c'] = np.array(c)
     return c
 
 
@@ -46,7 +50,10 @@ def to_tableau(program):
 
     xb = [eq + [x] for eq, x in zip(A, b)]
     z = c + [0]
-    return xb + [z]
+    tableu = xb + [z]
+
+    program.steps['initial_tableu'] = np.array(tableu)
+    return tableu
 
 
 def can_be_improved(tableau):
