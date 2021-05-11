@@ -2,9 +2,6 @@ import math
 import numpy as np
 import copy
 
-# reference: https://geekrodion.com/blog/operations/simplex
-# https://github.com/RodionChachura/optimization/blob/master/linear_programming.ipynb
-
 
 def generate_A(program, variable_names_to_idx):
     A = []
