@@ -53,7 +53,7 @@ def to_tableau(program):
     return tableu
 
 
-def can_be_improved(tableau):
+def is_non_optimal(tableau):
     z = tableau[-1]
     return any(x > 0 for x in z[:-1])
 
@@ -67,6 +67,9 @@ def get_pivot_position(tableau):
         el = eq[column]
         restrictions.append(math.inf if el <= 0 else eq[-1] / el)
 
+    if (all([r == math.inf for r in restrictions])):
+        raise Exception("Linear program is unbounded.")
+        
     row = restrictions.index(min(restrictions))
     return row, column
 
@@ -106,12 +109,43 @@ def get_solution(tableau):
 def simplex(program):
     tableau = to_tableau(program)
 
-    explored_points = []
-    while can_be_improved(tableau):
+    explored_points = [get_solution(tableau)[:2]]
+    tableau_list = [np.array(tableau)]
+
+    variable_names_to_idx = {v : i for i,v in enumerate(program.variables.keys())}
+    idx_to_variable_name = [name for name in program.variables.keys()]
+
+    curr_tab_row_titles = [v.name for v in program.variables.values() if v.is_slack]
+    curr_tab_col_titles = list(program.variables.keys())
+
+    tab_row_titles = [copy.deepcopy(curr_tab_row_titles)]
+    tab_col_titles = [copy.deepcopy(curr_tab_col_titles)]
+    while is_non_optimal(tableau):
+        iteration_steps = {}
         pivot_position = get_pivot_position(tableau)
         tableau = pivot_step(tableau, pivot_position)
         sol = get_solution(tableau)
-        explored_points.append(sol)
+        explored_points.append(sol[:2])
+
+        piv_row, piv_col = pivot_position
+        col_var = curr_tab_col_titles[piv_col]
+        row_var = curr_tab_row_titles[piv_row]
+
+        # print('----------------------------')
+        # print(curr_tab_col_titles, curr_tab_row_titles)
+
+        curr_tab_col_titles[piv_col] = row_var
+        curr_tab_row_titles[piv_row] = col_var
+
+        # print(pivot_position, (row_var, col_var))
+        # print(curr_tab_col_titles, curr_tab_row_titles)
+
+        np_tab = np.array(tableau)
+        np_tab = np.around(np_tab, 3)
+        tableau_list.append(np_tab)
+        tab_row_titles.append(copy.deepcopy(curr_tab_row_titles))
+        tab_col_titles.append(copy.deepcopy(curr_tab_col_titles))
 
     final_sol = explored_points[-1]
-    return (final_sol, explored_points)
+    tableau_steps = list(zip(tab_row_titles, tab_col_titles, tableau_list))
+    return (final_sol, explored_points, tableau_steps)
