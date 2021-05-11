@@ -52,22 +52,26 @@
     margin-top: 0.3em;
   }
   #pagin {
-    margin-left: 0.5em;
+    margin-left: 0.7em;
   }
   #words {
     margin-left: 0.5em;
+    display: inline;
+    float: right;
+    margin-top: 0.1em;
   }
   #block {
-
+    display: inline-block;;
   }
   #graph {
     margin-left: 0.5em;
     margin-right: 0.5em;
     padding-bottom: 0.5em;
+    display: inline;
   }
   #matrix {
     width: 25%;
-    margin-left: 0.9em;
+    margin-left: 1.2em;
     padding-bottom: 0.5em;
   }
   #submit {
@@ -104,11 +108,13 @@
       Results
     </div>
     <b-pagination id="pagin" v-model="curpage" :total-rows="rows" :per-page="one"></b-pagination>
-    <div id="words"> {{words}}</div>
     <div id="block">
       <b-img v-bind="imgprops" :src="updateImage()" id="graph"></b-img>
-      <b-table striped bordered small id="matrix" :items="updateTable()"><b-table>
+      <div id="words"> [[words]]</div>
     </div>
+    <p id="matlabel"> [[labm]]</p>
+    <b-table striped bordered small id="matrix" :items="updateTable()"><b-table>
+    <br>
   </div>
 
 
@@ -170,6 +176,7 @@
             document.getElementById("submit").disabled = false; //allow queries to start again
           }); //finished query
           console.log("done with backend");
+          document.getElementById("submit").disabled = false;
       },
       getConstraints: function() {
         var cons = this.text.split("\n");
@@ -220,9 +227,11 @@
     }
   });
   var results = new Vue({
+    delimiters : ['[[',']]'],
     el: '#results',
     data: {
       words: "",
+      labm: "",
       display: false,
       imgprops: {width: 350, height: 350},
       curpage: 1,
@@ -246,6 +255,7 @@
         } else {
           var list = [];
           var temp = this.steps[this.curpage-1]['matrix']['data'];
+          this.labm = this.steps[this.curpage-1]['label'];
           for(var key in temp) {
             list.push(temp[key]);
           }
@@ -256,6 +266,7 @@
         if(this.steps.length < 1) {
           return "";
         } else {
+          this.words = this.steps[this.curpage-1]['text'];
           return this.steps[this.curpage-1]['figure']; //"data:image/png;base64, " + this.steps[this.curpage][0];
         }
       }

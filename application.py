@@ -38,7 +38,8 @@ def results():
         step['matrix'] = {
             'title_columns' : tab_col,
             'title_rows' : tab_row,
-            'data': tab.tolist()
+            'data': tab.tolist(),
+            'explanations': ['expl 1', 'expl 2', 'plex 1']
         }
 
         # print(point)
