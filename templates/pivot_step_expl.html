@@ -1,5 +1,5 @@
 <ul>
-<li>To perform the pivot operation first Take the value of the element from the previous tableu at 
+<li>To perform the pivot operation first Take the value of the element from the previous tableau at
     the pivot position ({i} row and {j} column) as the pivot value</li>
 
 <li>Then take the {i}th row and divide all the elements by it by the pivot value. This operation will 
@@ -8,7 +8,7 @@
 <li>For every other rows, they are modified as follows: <br>
     <pre>new_row[p] = prev_row[p] - (prev_row[j] * normalized_pivot_row[p])</pre>
 </li>
-<li>Performing the above operation for the remaining rows will result in the new tableu that is displayed
+<li>Performing the above operation for the remaining rows will result in the new tableau that is displayed
      on top. Notice that the row and column labels corresponding to the pivot row and pivot columns have 
      been swapped. This is why the operation is called a pivot step</li>
 </ul>
