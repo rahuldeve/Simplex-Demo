@@ -1,11 +1,11 @@
-import numpy as np
-from scipy.spatial import HalfspaceIntersection, ConvexHull
-from scipy.optimize import linprog
-import matplotlib.pyplot as plt
-from matplotlib.patches import Polygon
-import io
 import base64
-import copy
+import io
+
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.patches import Polygon
+from scipy.optimize import linprog
+from scipy.spatial import HalfspaceIntersection, ConvexHull
 
 from solve import generate_A, generate_b
 
@@ -37,7 +37,6 @@ def visualize(program, steps):
     steps = np.array(steps)
     steps = steps[:, :2]
 
-
     figs = []
     for i, (p,q) in enumerate(steps):
 
@@ -48,12 +47,6 @@ def visualize(program, steps):
 
         x = np.linspace(*xlim, 100)
 
-        # for h in halfspaces:
-        #     if h[1]== 0:
-        #         ax.axvline(-h[2]/h[0], color="#2c3e50")
-        #     else:
-        #         ax.plot(x, (-h[2]-h[0]*x)/h[1], color="#2c3e50")
-
         x, y = zip(*points)
         # points = list(zip(x, y))
         convex_hull = ConvexHull(points)
@@ -61,15 +54,12 @@ def visualize(program, steps):
         ax.add_patch(polygon)
         ax.plot(x, y, 'o', color="#e67e22")
 
-        print(p,q)
         ax.plot(p, q, 'o', markersize=15)
-
 
         byarray = io.BytesIO()
         fig.savefig(byarray, format='png', bbox_inches="tight")
         b64 = base64.b64encode(byarray.getvalue()).decode("utf-8").replace("\n", "")
         b64 = 'data:image/png;base64,%s' % b64
         figs.append(b64)
-
 
     return figs
