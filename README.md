@@ -1,4 +1,4 @@
-#Implementation of Simlpex Algorithm
+## Implementation of Simlpex Algorithm
 Implementation of Simplex Algorithm by Group 4 as part of the final project.
 
 # Team Members
