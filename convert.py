@@ -2,8 +2,6 @@ from utils import *
 import math
 import copy
 
-## https://sites.math.washington.edu/~burke/crs/407/lectures/L4-lp_standard_form.pdf
-
 def is_ineq_nonnegative(var_range):
     return var_range[0] < 0 and var_range[1] <= 0
 
@@ -14,7 +12,7 @@ def fix_non_negative_variable_declarations(program):
         if is_ineq_nonnegative(v.range)
     ])
 
-    new_name_mapping = { old_name : old_name + '\'' for old_name in to_replace}
+    new_name_mapping = {old_name: old_name + '\'' for old_name in to_replace}
 
     # replace x with x'; set the appropriate variable range
     for v_name in to_replace:
@@ -29,7 +27,7 @@ def fix_non_negative_variable_declarations(program):
     for c in program.constraints:
         for idx in range(len(c.variable_names)):
             vi = c.variable_names[idx]
-            if vi in to_replace :
+            if vi in to_replace:
                 c.variable_names[idx] = new_name_mapping[vi]
                 c.constants[idx] *= -1
 
@@ -47,18 +45,16 @@ def fix_non_negative_variable_declarations(program):
 def fix_constraints_inequality_geq(program):
     for c in program.constraints:
         if c.ineq == Inequality.geq:
-            c.constants = [-1*const for const in c.constants]
+            c.constants = [-1 * const for const in c.constants]
             c.ineq = c.ineq.flip()
             c.value *= -1
 
     return program
 
 
-
 def fix_equality_in_constraints(program):
-
     has_equality = [
-        i for i,c in enumerate(program.constraints)
+        i for i, c in enumerate(program.constraints)
         if c.ineq == Inequality.eq
     ]
 
@@ -79,10 +75,9 @@ def fix_equality_in_constraints(program):
 
         else:
             converted.append(c)
-    
+
     program.constraints = converted
     return program
-
 
 
 def convert_to_maximization(program):
@@ -94,7 +89,6 @@ def convert_to_maximization(program):
     return program
 
 
-    
 def to_standardard_form(program):
     # Handle unbound variables
     program = fix_non_negative_variable_declarations(program)
@@ -103,7 +97,6 @@ def to_standardard_form(program):
     program = convert_to_maximization(program)
     program.steps['stardard_form_conversion'] = copy.deepcopy(program)
     return program
-
 
 
 def to_slack_form(program):
@@ -122,7 +115,7 @@ def to_slack_form(program):
     for c in program.constraints:
         if c.value < 0:
             # flip signs of all constants and value
-            c.constants = [-1*k for k in c.constants]
+            c.constants = [-1 * k for k in c.constants]
             c.value *= -1
 
     program.steps['slack_form_conversion'] = copy.deepcopy(program)
