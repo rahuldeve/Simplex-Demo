@@ -1,7 +1,8 @@
-from utils import *
-from pyparsing import *
 import math
 import copy
+from utils import *
+from pyparsing import *
+
 
 def handle_inequality(tokens):
     mapping = {
@@ -9,7 +10,7 @@ def handle_inequality(tokens):
         # '>' : Inequality.g,
         '<=': Inequality.leq,
         '>=': Inequality.geq,
-        '=' : Inequality.eq
+        '=': Inequality.eq
     }
     token = tokens[0]
     return mapping[token]
@@ -17,8 +18,8 @@ def handle_inequality(tokens):
 
 def handle_operation(tokens):
     mapping = {
-        '+' : Operation.add,
-        '-' : Operation.sub,
+        '+': Operation.add,
+        '-': Operation.sub,
         # '*' : Operation.mul,
         # '/' : Operation.div
     }
@@ -30,11 +31,10 @@ def handle_operation(tokens):
 def handle_variable_with_constant(tokens):
     if len(tokens) == 1:
         # The tokens[0] object will be of type Variable since it was already parsed before
-        return (1.0, tokens[0])
+        return 1.0, tokens[0]
     else:
         # The tokens[1] object will be of type Variable since it was already parsed before
-        return (tokens[0], tokens[1])
-
+        return tokens[0], tokens[1]
 
 
 #################################################################################################
@@ -43,20 +43,19 @@ def handle_variable_with_constant(tokens):
 #
 #################################################################################################
 
-## Parses any number to floats
+# Parses any number to floats
 number = pyparsing_common.fnumber
-## Parses any string as a variable object
+# Parses any string as a variable object
 var = Regex(r'[a-zA-Z]+[0-9]*')
-## Parses '3x' as [3, Variable(x)]
+# Parses '3x' as [3, Variable(x)]
 var_with_constant = var | Optional(number) + var
 # Automatically put the variable and its constants in a tuple; Easier to process later
 var_with_constant.setParseAction(handle_variable_with_constant)
-## Parses any inequality symbols (<=, >=, =) to an object representation
+# Parses any inequality symbols (<=, >=, =) to an object representation
 ineq = Regex(r'[<>]?=').setParseAction(handle_inequality)
-## Parses +, -, *, / to an object representation
+# Parses +, -, *, / to an object representation
 oper = oneOf('+ -').setParseAction(handle_operation)
 end_of_line = Literal(';').suppress()
-
 
 
 #################################################################################################
@@ -83,9 +82,9 @@ def construct_variable(parsed):
 
     return Variable(var_name, var_range)
 
+
 var_decl = Literal('var ').suppress() + var_with_constant + ineq + number + end_of_line
 var_decl.setParseAction(construct_variable)
-
 
 
 #################################################################################################
@@ -123,11 +122,11 @@ def construct_constraint(parsed):
 
     return Constraint(variable_names, constants, ineq, value)
 
+
 st_literal = Literal('st: ').suppress()
 expr = var_with_constant + ZeroOrMore(oper + var_with_constant)
 constraint_decl = st_literal + expr + ineq + number + end_of_line
 constraint_decl.setParseAction(construct_constraint)
-
 
 
 #################################################################################################
@@ -165,13 +164,12 @@ def construct_objective(parsed):
 
     return Objective(obj_type, variable_names, constants)
 
+
 maximize = Literal('maximize').setParseAction(lambda x: ObjectiveTypes.maximize)
 minimize = Literal('minimize').setParseAction(lambda x: ObjectiveTypes.minimize)
 lin_type = maximize | minimize
 objective_decl = lin_type + Literal(': ').suppress() + expr + end_of_line
 objective_decl.setParseAction(construct_objective)
-
-
 
 #################################################################################################
 #
