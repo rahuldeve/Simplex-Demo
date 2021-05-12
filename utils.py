@@ -1,6 +1,7 @@
+from dataclasses import dataclass
 from enum import Enum
-from dataclasses import dataclass, field
-from typing import List, Mapping
+from typing import List
+
 
 class Inequality(Enum):
     # l = '<'
@@ -13,8 +14,8 @@ class Inequality(Enum):
         mapping = {
             # Inequality.l : Inequality.g,
             # Inequality.g : Inequality.l,
-            Inequality.leq : Inequality.geq,
-            Inequality.geq : Inequality.leq,
+            Inequality.leq: Inequality.geq,
+            Inequality.geq: Inequality.leq,
         }
 
         return mapping[self]
@@ -28,7 +29,7 @@ class Operation(Enum):
 
 
 @dataclass
-class Variable():
+class Variable:
     name: str
     range: (float, float)
     is_slack: bool = False
@@ -43,9 +44,8 @@ class Variable():
         return ret
 
 
-
 @dataclass
-class Constraint():
+class Constraint:
     variable_names: List[str]
     constants: List[float]
     ineq: Inequality
@@ -53,10 +53,9 @@ class Constraint():
 
     def __repr__(self):
         zipped = zip(self.constants, self.variable_names)
-        var_with_constants = [str(c)+v for c,v in zipped]
+        var_with_constants = [str(c) + v for c, v in zipped]
         lhs = ' + '.join(var_with_constants)
         return f'{lhs} {self.ineq.value} {self.value}'
-
 
 
 class ObjectiveTypes(Enum):
@@ -65,29 +64,28 @@ class ObjectiveTypes(Enum):
 
 
 @dataclass
-class Objective():
+class Objective:
     obj_type: ObjectiveTypes
     variable_names: List[str]
     constants: List[float]
 
     def __repr__(self):
         zipped = zip(self.constants, self.variable_names)
-        var_with_constants = [str(c)+v for c,v in zipped]
+        var_with_constants = [str(c) + v for c, v in zipped]
         function = ' + '.join(var_with_constants)
         function_type = self.obj_type.name
         return f'{function_type}: {function}'
 
 
 @dataclass
-class Program():
+class Program:
     def __init__(self, variables, constraints, objective_function):
-        self.variables = {v.name : v for v in variables}
+        self.variables = {v.name: v for v in variables}
         self.constraints = constraints
         self.objective_function = objective_function
 
         self.steps = {}
         self.intersection_points = []
-
 
     def __repr__(self):
 
