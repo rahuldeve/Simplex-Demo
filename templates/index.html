@@ -1,299 +1,239 @@
 <!doctype html>
-<html>
-<head>
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-  <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
-</head>
-<style>
-  body {
-    font-weight: bold;
-    font-size: 20px;
-    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-    background-color: rgb(237, 240, 240);
-    color: rgb(34, 35, 36);
-  }
-  #header {
-    font-size: 36px;
-    text-align: center;
-    padding-top: 0.6em;
-    padding-bottom: 0.4em;
-  }
-  #res {
-    font-size: 32px;
-    margin-left:1em;
-    padding-top: 0.4em;
-    color: black;
-  }
-  #input {
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
+   <head>
+     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+     <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+     <link rel="stylesheet" href="/static/css/custom.css" />
+   </head>
 
-  }
-  #description {
-    padding-top: 0.2em;
-    margin-left: 0.5em;
-    margin-right: 0.5em;
-    margin-bottom:0.2em;
-  }
-  #constraints {
-    margin-left: 0.5em;
-    margin-right: 0.5em;
-    padding-bottom: 0.3em;
-  }
-  #sel {
-    margin-bottom: 0.1em;
-  }
-  #obj {
-    margin-bottom: 0.1em;
-  }
-  #cons {
-    margin-bottom: 0.1em;
-  }
-  #results {
-    background-color: white;
-    margin-top: 0.3em;
-  }
-  #pagin {
-    margin-left: 0.7em;
-  }
-  #words {
-    margin-left: 0.5em;
-    display: inline;
-    float: right;
-    margin-top: 0.6em;
-    height: 300px;
-    width: 960px;
-  }
-  #block {
-    display: inline-block;;
-  }
-  #graph {
-    margin-left: 0.5em;
-    margin-right: 0.5em;
-    padding-bottom: 0.5em;
-    display: inline;
-  }
-  #matrix {
-    width: 25%;
-    margin-left: 1.2em;
-    padding-bottom: 0.5em;
-  }
-  #submit {
-    box-shadow: 0 5px 5px 0 rgba(0,0,0,0.15), 0 5px 10px 0 rgba(0,0,0,0.15);
-    transition: 0.3s;
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 20px;
-    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-  }
-  .btn-outline-primary {
+   <body>
+      <div id="header">
+         Linear Optimization Solver
+      </div>
 
-  }
-</style>
+      <div id="input">
+         <div id="description" style="text-align: center;">
+            Please enter an optimization problem with two variables, in terms of x1 and x2.<br/>
+            While the simplex method can be used for any number of variables, we are restricting it two
+            to graphically represent the working of the simplex algorithm.
+            For constraints, enter each on its own line as in the example.
+         </div>
 
-<body>
-  <div id="header">
-    Linear Optimization Solver
-  </div>
-  <div id="input">
-    <div id="description">
-      Please enter an optimization problem with two variables, in terms of x1 and x2.
-      Enter each constraint on its own line.
-    </div>
-    <div id="constraints">
-      <b-form-select id="sel" v-model="selected" :options="options"></b-form-select>
-      <b-form-input id="obj" v-model="objfunc" placeholder="Enter optimization function"></b-form-input>
-      <b-form-textarea id="cons" v-model="text" placeholder="Enter constraints" rows="5"></b-form-textarea>
-      <button type="submit" value="Submit" id="submit" class="btn btn-outline-primary" v-on:click='getData'>Solve</button>
-    </div>
-  </div>
-  <div id="results" v-show="display">
-    <div id="res">
-      Results
-    </div>
-    <b-pagination id="pagin" v-model="curpage" :total-rows="rows" :per-page="one"></b-pagination>
-    <div id="block">
-      <b-img v-bind="imgprops" :src="updateImage()" id="graph"></b-img>
-      <input id="words" type="text" :value="words" READONLY/>
-    </div>
-    <b-table striped bordered small id="matrix" :items="updateTable()"><b-table>
-    <br>
-  </div>
+         <div id="constraints" style="text-align: center;" >
+           <b-form-select id="sel" v-model="selected" :options="options"></b-form-select>
+           <br><br>
+           <b-form-input id="obj" style="text-align: center;" v-model="objfunc" placeholder="Enter optimization function (e.g: 3x1 + 2x2)"></b-form-input>
+           <br>
+           <b-form-textarea id="cons" v-model="text" style="text-align: center;" placeholder="Enter constraints. Example:
+x1 + x2 <= 9
+3x1 + x2 <= 18
+x1 <=  7
+x2 <=  6" rows="5"></b-form-textarea>
+           <br>
+            <button type="submit" value="Submit" id="submit" class="btn btn-outline-primary" v-on:click='getData'>Solve</button>
+         </div>
+      </div>
 
+      <br><br>
+      <div id="results" v-show="display" style="background-color: rgb(237, 240, 240);">
+        <div id="res">
+          <h2 class="text-success mb-4 tm-section-title text-center"><b><u>OUTPUT</u></b></h2>
+        </div>
 
-</body>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-vue/2.21.2/bootstrap-vue.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
-<script>
-  var constraints = new Vue({
-    el: '#constraints',
-    data: {
-      options: [
-        {value: 0, text: 'minimize'},
-        {value: 1, text: 'maximize'}
-      ], //for objective function selection
-      selected: 0, //0min,1max
-      objfunc: "", //objective function as a string
-      text: "" //string of constraints, each separated by a newline
-    },
-    methods: {
-      getData: function() {
-        if(this.objfunc.length == 0) {
-          alert("Please enter an objective function.");
-          return;
+        <b-pagination id="pagin" align="center" v-model="curpage" :total-rows="rows" :per-page="one"></b-pagination>
+        <center>
+        <div class="row">
+          <div class="col-sm-6">
+            <b-img v-bind="imgprops" :src="updateImage()" id="graph"></b-img>
+          </div>
+          <div class="col-sm-6">
+            <b-table striped bordered small id="matrix" :items="updateTable()"></b-table>
+          </div>
+        </div>
+        <br>
+        </center>
+         <div class="row">
+           <div class="col-sm-10">
+              <div id="words" type="text" :value="words" v-html="words"></div>
+           </div>
+        </div>
+      </div>
+   </body>
+
+   <!-- JS -->
+   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-vue/2.21.2/bootstrap-vue.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+   <script>
+      var constraints = new Vue({
+        el: '#constraints',
+        data: {
+          options: [
+            {value: 0, text: 'minimize'},
+            {value: 1, text: 'maximize'}
+          ], //for objective function selection
+          selected: 0, //0min,1max
+          objfunc: "", //objective function as a string
+          text: "" //string of constraints, each separated by a newline
+        },
+        methods: {
+          getData: function() {
+            if(this.objfunc.length == 0) {
+              alert("Please enter an objective function.");
+              return;
+            }
+            if(this.text.length == 0) {
+              alert("Please enter some constraints.");
+              return;
+            }
+            document.getElementById("submit").disabled = true;
+            var temp = this.getConstraints();
+            var strings = temp[0];
+            var norms = temp[1];
+            var lines = temp[2];
+            axios //executes the query with a promise to get around asynchronous javascript behavior
+              .get('/results',{
+                params: {
+                  input: strings
+                },
+                headers: {
+                  'Content-Type': 'application/json;charset=UTF-8',
+                  'Access-Control-Allow-Origin': '*',
+                }
+              })
+              .then(response => {
+                var steps = response.data['iteration_steps'];
+                results.populateTables(steps);
+                results.displayData(steps);
+              }).catch(error => {
+                if(error.response) {
+                  console.log(error.response);
+                  alert("Error solving system: " + error.response.data);
+                }
+                document.getElementById("submit").disabled = false; //allow queries to start again
+              }); //finished query
+              document.getElementById("submit").disabled = false;
+          },
+          getConstraints: function() {
+            var cons = this.text.split("\n");
+            var one = "";
+            var two = "";
+            var constraints = []; //for the graphs
+            var xs = []; //holds x<>=c constraints
+            for(var i=0;i<cons.length;i++) {
+              var temp = cons[i].replace(/\s+/g, ''); //remove whitespace
+              if(temp.includes("x1") && !temp.includes("x2")) { //for xs
+                one = one + "st: " + temp + ";\n";
+                var c = parseInt(temp.split(/[><=]/)[1]); //constant
+                if(temp.includes(">")) { //0> 1< 2=
+                  xs.push([c,0])
+                } else if(temp.includes("<")) {
+                  xs.push([c,1])
+                } else {
+                  xs.push([c,2])
+                }
+              } else { //regular constraint
+                if(temp.includes("x2") && !temp.includes("x1")) {
+                  one = one + "st: " + temp + ";\n";
+                } else {
+                  two = two + "st: " + temp + ";\n";
+                }
+                temp = temp.split("x2")[1]; //remove y from string
+                var c = temp.split(/[<>=]/)[1]; //remove equality signs
+                if(temp.includes(">")) {
+                  constraints.push([c,0])
+                } else if(temp.includes("<")) {
+                  constraints.push([c,1])
+                } else {
+                  constraints.push([c,2])
+                }
+              }
+            }
+            var back = two + one + "\n";
+            var obfun = this.objfunc.replace(/\s+/g, ''); //remove spaces
+            if(this.selected == 0) {
+              back = back + "minimize: " + obfun + ";";
+            } else {
+              back = back + "maximize: " + obfun + ";";
+            }
+            back = "var x1>=0;\nvar x2>=0;\n\n" + back;
+            console.log(back);
+            return [back, constraints, xs];
+          }
         }
-        if(this.text.length == 0) {
-          alert("Please enter some constraints.");
-          return;
-        }
-        document.getElementById("submit").disabled = true;
-        var temp = this.getConstraints();
-        var strings = temp[0];
-        var norms = temp[1];
-        var lines = temp[2];
-        axios //executes the query with a promise to get around asynchronous javascript behavior
-          .get('/results',{
-            params: {
-              input: strings
-            },
-            headers: {
-              'Content-Type': 'application/json;charset=UTF-8',
-              'Access-Control-Allow-Origin': '*',
+      });
+      var results = new Vue({
+        delimiters : ['[[',']]'],
+        el: '#results',
+        data: {
+          words: "",
+          display: false,
+          imgprops: {width: 350, height: 350},
+          curpage: 1,
+          rows: 0,
+          steps: [],
+          one: 1,
+          fields: [],
+          items: [],
+        },
+        methods: {
+          displayData: function(steps) { //description text, constraints, x constraints, critcal points
+            //assume crits is of the form[a,b,c,d], where a<=x<=b and c<=y<=d
+            this.display = false;
+            this.steps = steps;
+            //this.words = "The current point is " + point.toString();
+            this.rows = steps.length;
+            this.curpage = 1;
+            this.display = true;
+          },
+          populateTables: function(steps) {
+            var it = [];
+            var cols = [];
+            for(var i=0;i<steps.length;i++) {
+              var temp = steps[i]['matrix']['data'];
+              var c = steps[i]['matrix']['title_columns'];
+              var r = steps[i]['matrix']['title_rows'];
+              c.push(" ");
+              c.unshift("var");
+              var list = [];
+              for(var j=0;j<temp.length;j++) {
+                temp[j].unshift(r[j]);
+                var entry = {};
+                for(var k=0;k<temp[j].length;k++) {
+                  entry[c[k]] = temp[j][k];
+                }
+                list.push(entry);
+              }
+              it.push(list);
+              cols.push(c);
             }
-          })
-          .then(response => {
-            var steps = response.data['iteration_steps'];
-            results.populateTables(steps);
-            results.displayData(steps);
-          }).catch(error => {
-            if(error.response) {
-              console.log("Error: " + error.message);
-              alert("Error solving system.");
-            }
-            document.getElementById("submit").disabled = false; //allow queries to start again
-          }); //finished query
-          document.getElementById("submit").disabled = false;
-      },
-      getConstraints: function() {
-        var cons = this.text.split("\n");
-        var one = "";
-        var two = "";
-        var constraints = []; //for the graphs
-        var xs = []; //holds x<>=c constraints
-        for(var i=0;i<cons.length;i++) {
-          var temp = cons[i].replace(/\s+/g, ''); //remove whitespace
-          if(temp.includes("x1") && !temp.includes("x2")) { //for xs
-            one = one + "st: " + temp + ";\n";
-            var c = parseInt(temp.split(/[><=]/)[1]); //constant
-            if(temp.includes(">")) { //0> 1< 2=
-              xs.push([c,0])
-            } else if(temp.includes("<")) {
-              xs.push([c,1])
+            this.fields = cols;
+            this.items = it;
+            return 0;
+          },
+          updateTable: function() {
+            if(this.steps.length < 1) {
+              return [];
             } else {
-              xs.push([c,2])
+              return this.items[this.curpage-1];
             }
-          } else { //regular constraint
-            if(temp.includes("x2") && !temp.includes("x1")) {
-              one = one + "st: " + temp + ";\n";
+          },
+          updateFields: function() {
+            if(this.steps.length < 1) {
+              return [];
             } else {
-              two = two + "st: " + temp + ";\n";
+              return this.fields[this.curpage-1];
             }
-            temp = temp.split("x2")[1]; //remove y from string
-            var c = temp.split(/[<>=]/)[1]; //remove equality signs
-            if(temp.includes(">")) {
-              constraints.push([c,0])
-            } else if(temp.includes("<")) {
-              constraints.push([c,1])
+          },
+          updateImage: function() {
+            if(this.steps.length < 1) {
+              return "";
             } else {
-              constraints.push([c,2])
+              this.words = this.steps[this.curpage-1]['matrix']['explanations'].toString();
+              return this.steps[this.curpage-1]['figure']; //"data:image/png;base64, " + this.steps[this.curpage][0];
             }
           }
         }
-        var back = two + one + "\n";
-        var obfun = this.objfunc.replace(/\s+/g, ''); //remove spaces
-        if(this.selected == 0) {
-          back = back + "minimize: " + obfun + ";";
-        } else {
-          back = back + "maximize: " + obfun + ";";
-        }
-        back = "var x1>=0;\nvar x2>=0;\n\n" + back;
-        console.log(back);
-        return [back, constraints, xs];
-      }
-    }
-  });
-  var results = new Vue({
-    delimiters : ['[[',']]'],
-    el: '#results',
-    data: {
-      words: "",
-      display: false,
-      imgprops: {width: 350, height: 350},
-      curpage: 1,
-      rows: 0,
-      steps: [],
-      one: 1,
-      fields: [],
-      items: [],
-    },
-    methods: {
-      displayData: function(steps) { //description text, constraints, x constraints, critcal points
-        //assume crits is of the form[a,b,c,d], where a<=x<=b and c<=y<=d
-        this.display = false;
-        this.steps = steps;
-        //this.words = "The current point is " + point.toString();
-        this.rows = steps.length;
-        this.curpage = 1;
-        this.display = true;
-      },
-      populateTables: function(steps) {
-        var it = [];
-        var cols = [];
-        for(var i=0;i<steps.length;i++) {
-          var temp = steps[i]['matrix']['data'];
-          var c = steps[i]['matrix']['title_columns'];
-          var r = steps[i]['matrix']['title_rows'];
-          c.push(" ");
-          c.unshift("var");
-          var list = [];
-          for(var j=0;j<temp.length;j++) {
-            temp[j].unshift(r[j]);
-            var entry = {};
-            for(var k=0;k<temp[j].length;k++) {
-              entry[c[k]] = temp[j][k];
-            }
-            list.push(entry);
-          }
-          it.push(list);
-          cols.push(c);
-        }
-        this.fields = cols;
-        this.items = it;
-        return 0;
-      },
-      updateTable: function() {
-        if(this.steps.length < 1) {
-          return [];
-        } else {
-          return this.items[this.curpage-1];
-        }
-      },
-      updateFields: function() {
-        if(this.steps.length < 1) {
-          return [];
-        } else {
-          return this.fields[this.curpage-1];
-        }
-      },
-      updateImage: function() {
-        if(this.steps.length < 1) {
-          return "";
-        } else {
-          this.words = this.steps[this.curpage-1]['matrix']['explanations'].toString();
-          return this.steps[this.curpage-1]['figure']; //"data:image/png;base64, " + this.steps[this.curpage][0];
-        }
-      }
-    }
-  });
-</script>
-
+      });
+   </script>
 </html>

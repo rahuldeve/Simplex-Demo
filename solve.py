@@ -1,6 +1,7 @@
 import math
 import numpy as np
 import copy
+from flask import render_template
 
 
 def generate_A(program, variable_names_to_idx):
@@ -59,8 +60,13 @@ def is_non_optimal(tableau):
 
 
 def get_pivot_position(tableau):
+    explanations = []
     z = tableau[-1]
     column = next(i for i, x in enumerate(z[:-1]) if x > 0)
+
+    # explanations.append(f'''Take the last row of the tableu and check for the first instance of a number > 0.
+    # In this iteration, the {column}th row of the has the first instance of a positive number > 0.
+    # Note that if no such element exists, then the linear program is unbounded and the simplex algorithm will stop''')
     
     restrictions = []
     for eq in tableau[:-1]:
@@ -71,7 +77,11 @@ def get_pivot_position(tableau):
         raise Exception("Linear program is unbounded.")
         
     row = restrictions.index(min(restrictions))
-    return row, column
+
+    explanations = render_template('pivot_pos_expl.html', row=row, column=column, restrictions=restrictions,
+    prev_tab=np.array(tableau))
+
+    return ((row, column), explanations)
 
 
 def pivot_step(tableau, pivot_position):
@@ -85,15 +95,16 @@ def pivot_step(tableau, pivot_position):
         if eq_i != i:
             multiplier = np.array(new_tableau[i]) * tableau[eq_i][j]
             new_tableau[eq_i] = np.array(tableau[eq_i]) - multiplier
-   
-    return new_tableau
+
+    explanations = render_template('pivot_step_expl.html', i=i, j=j, new_tableau=new_tableau)
+    return new_tableau, explanations
 
 
 def is_basic(column):
     return sum(column) == 1 and len([c for c in column if c == 0]) == len(column) - 1
 
 
-def get_solution(tableau):
+def get_solution(tableau, program):
     columns = np.array(tableau).T
     solutions = []
     for column in columns[:-1]:
@@ -102,15 +113,19 @@ def get_solution(tableau):
             one_index = column.tolist().index(1)
             solution = columns[-1][one_index]
         solutions.append(solution)
-        
-    return solutions
+
+    solution_map = {name: val for name, val in zip(program.variables.keys(), solutions)}
+    explanations = render_template('sol_extract_expl.html', transposed_tab = columns, solution_map=solution_map)
+    return solutions, explanations
 
 
 def simplex(program):
     tableau = to_tableau(program)
 
-    explored_points = [get_solution(tableau)[:2]]
+    first_sol, first_sol_expl = get_solution(tableau, program)
+    explored_points = [first_sol[:2]]
     tableau_list = [np.array(tableau)]
+    explanations = [render_template('first_step_expl.html', program=program)]
 
     variable_names_to_idx = {v : i for i,v in enumerate(program.variables.keys())}
     idx_to_variable_name = [name for name in program.variables.keys()]
@@ -122,23 +137,19 @@ def simplex(program):
     tab_col_titles = [copy.deepcopy(curr_tab_col_titles)]
     while is_non_optimal(tableau):
         iteration_steps = {}
-        pivot_position = get_pivot_position(tableau)
-        tableau = pivot_step(tableau, pivot_position)
-        sol = get_solution(tableau)
+        pivot_position, piv_pos_expl = get_pivot_position(tableau)
+        tableau, new_tab_expl = pivot_step(tableau, pivot_position)
+        sol, sol_expl = get_solution(tableau, program)
         explored_points.append(sol[:2])
 
         piv_row, piv_col = pivot_position
         col_var = curr_tab_col_titles[piv_col]
         row_var = curr_tab_row_titles[piv_row]
 
-        # print('----------------------------')
-        # print(curr_tab_col_titles, curr_tab_row_titles)
 
         curr_tab_col_titles[piv_col] = row_var
         curr_tab_row_titles[piv_row] = col_var
 
-        # print(pivot_position, (row_var, col_var))
-        # print(curr_tab_col_titles, curr_tab_row_titles)
 
         np_tab = np.array(tableau)
         np_tab = np.around(np_tab, 3)
@@ -146,6 +157,11 @@ def simplex(program):
         tab_row_titles.append(copy.deepcopy(curr_tab_row_titles))
         tab_col_titles.append(copy.deepcopy(curr_tab_col_titles))
 
+
+        step_expl = render_template('simplex_iter_expl.html', 
+        piv_pos_expl=piv_pos_expl, new_tab_expl = new_tab_expl, sol_expl = sol_expl, is_non_optimal = is_non_optimal(tableau))
+        explanations.append(step_expl)
+
     final_sol = explored_points[-1]
     tableau_steps = list(zip(tab_row_titles, tab_col_titles, tableau_list))
-    return (final_sol, explored_points, tableau_steps)
+    return (final_sol, explored_points, tableau_steps, explanations)

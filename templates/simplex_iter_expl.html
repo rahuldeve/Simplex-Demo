@@ -1,0 +1,14 @@
+<h3>Getting the pivot position</h3>
+{{piv_pos_expl|safe}}
+<hr>
+<h3>Pivoting the tableau</h3>
+{{new_tab_expl|safe}}
+<hr>
+<h3>Extracting a feasible solution from the tableau</h3>
+{{sol_expl|safe}}
+<hr>
+{% if is_non_optimal %}
+<p>The current tableau is still non optimal. The algorithm will proceed</p>
+{% else %}
+<p>The current tableau is optimal. The algorithm will stop</p>
+{% endif %}

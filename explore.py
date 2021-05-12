@@ -61,7 +61,8 @@ def visualize(program, steps):
         ax.add_patch(polygon)
         ax.plot(x, y, 'o', color="#e67e22")
 
-        ax.plot(p, q, 'o')
+        print(p,q)
+        ax.plot(p, q, 'o', markersize=15)
 
 
         byarray = io.BytesIO()

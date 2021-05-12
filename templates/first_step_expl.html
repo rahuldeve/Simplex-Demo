@@ -1,0 +1,38 @@
+<h3>Standardizing th linear program</h3>
+<ul>
+    <li>Succesfully detected the folllowing linear program:<br><pre>{{program.steps['initial_parse']}}</pre></li>
+    <li>First we have to convert the program into its standard form. Converting it gives the following linear program<br>
+        <pre>{{program.steps['stardard_form_conversion']}}</pre>
+    </li>
+    <li>Next we have to add slack variables to get rid of the inequalities in linear program: This gives:<br>
+        <pre>{{program.steps['slack_form_conversion']}}</pre>
+    </li>
+</ul>
+<hr>
+<h3>Constructing the tableau</h3>
+<ul>
+    <li>We have to next construct a tableu from the linear program. This involves creating the matrices and combining them</li>
+    <li>The first two matrices A and B are constructed respectively using the LHS and RHS of our linear program. Below the constraints
+        along with the generated matrices are displayed<br>
+        <p>
+            {% for c in program.constraints %}
+                {{c}} <br>
+            {% endfor %}
+        </p>
+        <br>
+        Matrix A:
+        <pre>{{program.steps['mat_A']}}</pre>
+        Matrix B:
+        <pre>{{program.steps['mat_b']}}</pre>
+    </li>
+    <li>
+        The final matrix C is constructed using the constants of the objective function<br>
+        <pre>{{program.objective_function}}</pre>
+        <br>
+        Matrix C:
+        <pre>{{program.steps['mat_c']}}</pre>
+    </li>
+    <li>Combine the matrices by appending matrix B as the rightmost column and matrix C as the last row of matrix A
+        Fill the empty gap of the resulting matrix with 0. This finally gives us the tableu that is displayed at the top
+    </li>
+</ul>

@@ -1,0 +1,16 @@
+<ul>
+<li>Take the last row of the tableu displayed in the previous step and check for the first instance of a number > 0.
+    The tableau displayed in the previous step is printed below for convenience:<br>
+    <pre>{{prev_tab}}</pre>
+</li>
+<li>Notice that the {{column}}th row of the has the first instance of a positive number > 0. Henceforth the {{column}}th
+    row will be called as the pivot row. Note that if no such element exists, then the linear program is unbounded and the 
+    simplex algorithm will stop</li>
+
+<li>For each row of the tableu(except the last row), take the last element and the {{column}}th element of the row.
+    Let the last element be x and the {{column}}th element be y. Keep track of x/y for each row. If y <= 0, take x/y as
+    infinity. Performing this for each row we will get the following values for each row: {{restrictions}}<br>
+    Choose the row which has the minimum x/y value. In this case it is {{row}}th row.</li>
+
+<li>({{row}}, {{column}}) will be the pivot position for this iteration</li>
+</ul>

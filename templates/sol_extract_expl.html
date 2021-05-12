@@ -1,0 +1,13 @@
+<ul>
+    <li>Each new configuration of a tableu represents the simplex algorithm exploring
+        a new intersection point of the linear program. We can extract this point from the tableau</li>
+    <li>First take the transpose of the current tableau. This gives:<br>
+        <pre>{{transposed_tab}}</pre>
+    </li>
+    <li>Then for each row (except the last), check if 
+        the row has a single element that is equal to 1 and the rest as zeros. Keep track of the index of such rows.</li>
+    <li>Then for each of these index values, note down the value at the index position of the last column of the transposed
+        tableau. This list represents a feasible solution point for all the variables(including slack variables) 
+        for our linear program in slack form. In this current iteration {{solution_map}} is a feasible solution.
+        The coordinates for the non slack variables are plotted to the graph above</li>
+</ul>

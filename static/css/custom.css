@@ -1,0 +1,95 @@
+body {
+	font-weight: bold;
+	font-size: 20px;
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	background-color: rgb(237, 240, 240);
+	color: rgb(34, 35, 36);
+}
+
+#header {
+	font-size: 36px;
+	text-align: center;
+	padding-top: 0.6em;
+	padding-bottom: 0.4em;
+}
+
+#res {
+	font-size: 32px;
+	margin-left: 1em;
+	padding-top: 0.4em;
+	color: black;
+}
+
+#input {}
+
+#description {
+	padding-top: 0.2em;
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+	margin-bottom: 0.2em;
+}
+
+#constraints {
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+	padding-bottom: 0.3em;
+}
+
+#sel {
+	margin-bottom: 0.1em;
+}
+
+#obj {
+	margin-bottom: 0.1em;
+}
+
+#cons {
+	margin-bottom: 0.1em;
+}
+
+#results {
+	background-color: white;
+	margin-top: 0.3em;
+}
+
+#pagin {
+	margin-left: 0.7em;
+}
+
+#words {
+	margin-left: 0.5em;
+	display: inline;
+	float: right;
+	margin-top: 0.6em;
+	height: 300px;
+	width: 960px;
+}
+
+#block {
+	display: inline-block;
+	;
+}
+
+#graph {
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+	padding-bottom: 0.5em;
+	display: inline;
+}
+
+#matrix {
+	width: 25%;
+	margin-left: 1.2em;
+	padding-bottom: 0.5em;
+}
+
+#submit {
+	box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.15), 0 5px 10px 0 rgba(0, 0, 0, 0.15);
+	transition: 0.3s;
+	padding: 6px 10px;
+	border-radius: 6px;
+	font-size: 20px;
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+.btn-outline-primary {}

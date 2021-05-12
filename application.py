@@ -23,12 +23,16 @@ def results():
     p = to_standardard_form(p)
     p = to_slack_form(p)
 
-    final, points, tableau_steps = simplex(p)
+    try:
+        final, points, tableau_steps, explanations = simplex(p)
+    except Exception as e:
+        # print('-------', str(e))
+        return str(e), 500
 
     figures = visualize(p, points)
 
     steps = []
-    for point, fig, tab_step in zip(points, figures, tableau_steps):
+    for point, fig, tab_step, exp in zip(points, figures, tableau_steps, explanations):
         
         tab_row, tab_col, tab = tab_step
 
@@ -39,16 +43,13 @@ def results():
             'title_columns' : tab_col,
             'title_rows' : tab_row,
             'data': tab.tolist(),
-            'explanations': ['expl 1', 'expl 2', 'plex 1']
+            'explanations': exp
         }
 
         # print(point)
         steps.append(step)
 
 
-    # return render_template('results.html', program=p)
-    # print(steps)
-    # return render_template('test.html', steps=steps)
     return jsonify({'iteration_steps': steps})
 
 if __name__ == '__main__':
