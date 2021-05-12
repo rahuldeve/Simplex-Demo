@@ -125,7 +125,8 @@ def simplex(program):
     first_sol, first_sol_expl = get_solution(tableau, program)
     explored_points = [first_sol[:2]]
     tableau_list = [np.array(tableau)]
-    explanations = [render_template('first_step_expl.html', program=program)]
+    explanations = [render_template('first_step_expl.html', program=program, 
+    is_non_optimal = is_non_optimal(tableau), first_sol=first_sol[:2])]
 
     variable_names_to_idx = {v: i for i, v in enumerate(program.variables.keys())}
     idx_to_variable_name = [name for name in program.variables.keys()]

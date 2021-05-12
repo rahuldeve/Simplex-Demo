@@ -36,3 +36,13 @@
         Fill the empty gap of the resulting matrix with 0. This finally gives us the tableau that is displayed at the top
     </li>
 </ul>
+<hr>
+<p>Each configuration of the tableau represents the simplex algorithm exploring a particular point in the graph mentioned above
+    As you can see from the graph, the simplex algorithm is now evaluating the point {{first_sol}}. The method to extract 
+    the point being inspected from the tableau will be explained later.
+</p>
+{% if is_non_optimal %}
+<p>The current tableau is still non optimal. The algorithm will proceed</p>
+{% else %}
+<p>The current tableau is optimal. The algorithm will stop</p>
+{% endif %}
