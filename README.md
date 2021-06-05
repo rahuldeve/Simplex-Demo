@@ -1,6 +1,7 @@
 ## Implementation of Simlpex Algorithm
 
-Implementation of Simplex Algorithm by Group 4 as part of the final project.
+Implementation of Simplex Algorithm by Group 4 as part of the final project. <br>
+A video can be found [here](https://youtu.be/5CEA5444tv4) which explains the project.
 
 ## Team Members
 [Rahul Dev Ellezhuthil](https://github.com/rahuldeve)
