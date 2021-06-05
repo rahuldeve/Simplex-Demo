@@ -5,7 +5,7 @@ Implementation of Simplex Algorithm by Group 4 as part of the final project.
 ## Team Members
 [Rahul Dev Ellezhuthil](https://github.com/rahuldeve)
 
-[Jacob Celestine](https://github.com/jacobceles)
+[Jacob Celestine](https://jacobcelestine.com/)
 
 [Kenneth Erickson](https://www.linkedin.com/in/ken-erickson-a79b8616b/)
 
